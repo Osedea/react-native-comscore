@@ -1,6 +1,4 @@
 #import <Foundation/Foundation.h>
-#import "CSComScore.h"
-#import "CSStreamSense.h"
 #import "RNComscore.h"
 #if __has_include("RCTConvert.h")
 #import "RCTConvert.h"
@@ -8,7 +6,7 @@
 #import <React/RCTConvert.h>
 #endif
 
-static CSStreamSense *streamSense;
+#import <ComScore/ComScore.h>
 
 @implementation RNComScore {
 
@@ -16,11 +14,10 @@ static CSStreamSense *streamSense;
 
 NSString *comScoreAppName;
 NSString *comScorePublisherSecret;
+NSString *comScorePublisherId;
 NSString *comScorePixelUrl;
-
-NSString *streamSenseMediaPlayer;
-NSString *streamSenseVersion;
-NSString *streamSenseChannel;
+SCORStreamingAnalytics *streamingAnalytics;
+SCORStreamingPlaybackSession *playbackSession;
 
 - (dispatch_queue_t)methodQueue
 {
@@ -29,39 +26,22 @@ NSString *streamSenseChannel;
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(init:(NSDictionary *) options)
+RCT_EXPORT_METHOD(init:(NSDictionary *) options metaData:(NSDictionary *) metaData)
 {
-
 	comScoreAppName = [RCTConvert NSString:options[@"appName"]];
+	comScorePublisherId = [RCTConvert NSString:options[@"publisherId"]];
 	comScorePublisherSecret = [RCTConvert NSString:options[@"publisherSecret"]];
-	comScorePixelUrl = [RCTConvert NSString:options[@"pixelUrl"]];
 
-	streamSenseMediaPlayer = [RCTConvert NSString:options[@"streamSenseMediaPlayer"]];
-	streamSenseVersion = [RCTConvert NSString:options[@"streamSenseVersion"]];
-	streamSenseChannel = [RCTConvert NSString:options[@"streamSenseChannel"]];
+	streamingAnalytics = [[SCORStreamingAnalytics alloc] init];
 
-	[CSComScore setAppContext];
-	[CSComScore setAppName:comScoreAppName];
-	[CSComScore setPublisherSecret:comScorePublisherSecret];
-	[CSComScore setPixelURL:comScorePixelUrl];
-
-	NSMutableDictionary *labels = [NSMutableDictionary dictionary];
-	labels[@"category"] = @"karrewiet";
-	labels[@"behoefte"] = @"verbindend";
-	labels[@"doelgroep"] = @"kind";
-	labels[@"marketing"] = @"none";
-	labels[@"mediatype"] = @"tv";
-	labels[@"productiehuis"] = @"Small Town Heroes";
-	labels[@"waar"] = @"app";
-
-	[CSComScore setLabels:labels];
-
-	streamSense = [[CSStreamSense alloc] init];
-	[streamSense setLabels:@{
-		 @"ns_st_mp": streamSenseMediaPlayer,
-		 @"ns_st_mv": streamSenseVersion,
-		 @"ns_st_st": streamSenseChannel
-	 }];
+	SCORPublisherConfiguration *myPublisherConfig = [SCORPublisherConfiguration
+	publisherConfigurationWithBuilderBlock:^(SCORPublisherConfigurationBuilder *builder) {
+	  builder.publisherId = comScorePublisherId;
+	  builder.publisherSecret = comScorePublisherSecret;
+		builder.persistentLabels = metaData;
+	}];
+	[[SCORAnalytics configuration] addClientWithConfiguration:myPublisherConfig];
+	[SCORAnalytics start];
 }
 
 RCT_EXPORT_METHOD(trackView:(NSString *) view)
@@ -71,55 +51,38 @@ RCT_EXPORT_METHOD(trackView:(NSString *) view)
 	// all lowercase
 	//NSString *comscoreViewName = [[CSAppName stringByAppendingString:dottedView ] lowercaseString];
 	NSString *comscoreViewName = [comScoreAppName stringByAppendingString:dottedView ];
-	[CSComScore viewWithLabels:@{@"name":comscoreViewName }];
+	SCOREventInfo *eventInfo = [[SCOREventInfo alloc] init];
+	[eventInfo setLabels:@{@"name":comscoreViewName }];
+	[SCORAnalytics notifyViewEventWithEventInfo:eventInfo];
 }
 
 RCT_EXPORT_METHOD(trackEvent:(NSString *)action category:(NSString *)category)
 {
 	NSString *eventName = [NSString stringWithFormat:@"%@.%@",category,action];
-	[CSComScore hiddenWithLabels:@{@"name": eventName}];
+	SCOREventInfo *eventInfo = [[SCOREventInfo alloc] init];
+	[eventInfo setLabels:@{@"name":eventName }];
+	[SCORAnalytics notifyHiddenEventWithEventInfo:eventInfo];
 }
 
-RCT_EXPORT_METHOD(trackVideoStreaming:(NSDictionary*)videoInfo category:(NSString *)videoAction)
+RCT_EXPORT_METHOD(trackVideoStreaming:(NSDictionary*)videoInfo videoAction:(NSString *)videoAction)
 {
 	NSLog( @"Video Action: '%@'", videoAction );
 	long position = videoInfo[@"position"] ? [videoInfo[@"position"] longValue] : 0L;
-	long length =  videoInfo[@"length"] ? [videoInfo[@"length"] longValue] : 0L;
 
-	NSString *publicationDate = videoInfo[@"publication_date"] ? videoInfo[@"publication_date"] : @"";
-
-	NSString *formattedPublicationDate;
-	if (![publicationDate isEqualToString:@""]) {
-		NSDateFormatter *formatter = [NSDateFormatter new];
-		[formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
-		NSDate *date = [formatter dateFromString:publicationDate];
-		[formatter setDateFormat:@"YYYYMMdd"];
-		formattedPublicationDate = [formatter stringFromDate:date];
-	}
-
-	[streamSense setClip:@ {
-	   @"ns_st_cl": @(length),
-	   @"ns_st_el": @(length),
-	   @"ns_st_tp": videoInfo[@"parts"] ? videoInfo[@"parts"] : @"",
-	   @"ns_st_ci": videoInfo[@"whatson"] ? videoInfo[@"whatson"] : @"",
-	   @"vrt_vid_id": videoInfo[@"whatson"] ? videoInfo[@"whatson"] : @"",
-	   @"ns_st_pr": videoInfo[@"program"] ? videoInfo[@"program"] : @"",
-	   @"ns_st_ep": videoInfo[@"episode"] ? videoInfo[@"episode"] : @"",
-	   @"ns_st_ty": videoInfo[@"type_stream"] ? videoInfo[@"type_stream"] : @"",
-	   @"vrt_dat_id": formattedPublicationDate ? formattedPublicationDate : @""
-	}];
 	if ([videoAction isEqualToString:@"start"]) {
 		// NSLog( @"notifyPlay: '%@'", videoAction );
-		[streamSense notify:CSStreamSensePlay position:position];
+		[streamingAnalytics createPlaybackSession];
+		[[streamingAnalytics playbackSession] setAssetWithLabels: videoInfo];
+		[streamingAnalytics notifyPlayWithPosition:position labels:videoInfo];
 	} else if ([videoAction isEqualToString:@"resume"]) {
 		// NSLog( @"notifyPlay: '%@'", videoAction );
-		[streamSense notify:CSStreamSensePlay position:position];
+		[streamingAnalytics notifyPlay];
 	} else if ([videoAction isEqualToString:@"stop"]) {
 		// NSLog( @"notifyStop: '%@'", videoAction );
-		[streamSense notify:CSStreamSenseEnd position:position];
+		[streamingAnalytics notifyEnd];
 	} else if ([videoAction isEqualToString:@"pause"]) {
 		// NSLog( @"notifyPause: '%@'", videoAction );
-		[streamSense notify:CSStreamSensePause position:position];
+		[streamingAnalytics notifyPause];
 	}
 }
 
