@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A44F2761EF28FAB00AC8252 /* libcomScore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A44F2751EF28FAB00AC8252 /* libcomScore.a */; };
 		1A44F2781EF28FEA00AC8252 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A44F2771EF28FEA00AC8252 /* SystemConfiguration.framework */; };
 		1A44F27A1EF28FF100AC8252 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A44F2791EF28FF100AC8252 /* Security.framework */; };
 		B3E7B58A1CC2AC0600A0062D /* RNComscore.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNComscore.m */; };
@@ -27,8 +26,6 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNComscore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNComscore.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		1A44F2711EF28E3100AC8252 /* ComScoreLib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ComScoreLib; sourceTree = "<group>"; };
-		1A44F2751EF28FAB00AC8252 /* libcomScore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcomScore.a; path = ComScoreLib/libcomScore.a; sourceTree = "<group>"; };
 		1A44F2771EF28FEA00AC8252 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		1A44F2791EF28FF100AC8252 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		B3E7B5881CC2AC0600A0062D /* RNComscore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNComscore.h; sourceTree = "<group>"; };
@@ -42,7 +39,6 @@
 			files = (
 				1A44F27A1EF28FF100AC8252 /* Security.framework in Frameworks */,
 				1A44F2781EF28FEA00AC8252 /* SystemConfiguration.framework in Frameworks */,
-				1A44F2761EF28FAB00AC8252 /* libcomScore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,7 +58,6 @@
 			children = (
 				1A44F2791EF28FF100AC8252 /* Security.framework */,
 				1A44F2771EF28FEA00AC8252 /* SystemConfiguration.framework */,
-				1A44F2751EF28FAB00AC8252 /* libcomScore.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -70,7 +65,6 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				1A44F2711EF28E3100AC8252 /* ComScoreLib */,
 				B3E7B5881CC2AC0600A0062D /* RNComscore.h */,
 				B3E7B5891CC2AC0600A0062D /* RNComscore.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -174,11 +168,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/ComScoreLib/headers",
-					"<Multiple",
-					"values>",
-				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/ComScoreLib/headers";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -213,11 +203,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/ComScoreLib/headers",
-					"<Multiple",
-					"values>",
-				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/ComScoreLib/headers";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
@@ -233,6 +219,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../../../ios/Pods/Headers/Public/ComScore",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -252,6 +239,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../../../ios/Pods/Headers/Public/ComScore",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

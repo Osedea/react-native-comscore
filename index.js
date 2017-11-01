@@ -5,8 +5,8 @@ const { RNComScore } = NativeModules;
 
 class ComScoreTracker {
 
-	constructor(options) {
-		RNComScore.init(options);
+	constructor(options, metaData = {}) {
+		RNComScore.init(options, metaData);
 	}
 
 	trackView(view) {
