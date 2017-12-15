@@ -36,8 +36,9 @@ RCT_EXPORT_METHOD(init:(NSDictionary *) options metaData:(NSDictionary *) metaDa
 
 	SCORPublisherConfiguration *myPublisherConfig = [SCORPublisherConfiguration
 	publisherConfigurationWithBuilderBlock:^(SCORPublisherConfigurationBuilder *builder) {
-	  builder.publisherId = comScorePublisherId;
-	  builder.publisherSecret = comScorePublisherSecret;
+		builder.applicationName = comScoreAppName;
+		builder.publisherId = comScorePublisherId;
+		builder.publisherSecret = comScorePublisherSecret;
 		builder.persistentLabels = metaData;
 	}];
 	[[SCORAnalytics configuration] addClientWithConfiguration:myPublisherConfig];
