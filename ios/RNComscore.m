@@ -67,13 +67,16 @@ RCT_EXPORT_METHOD(trackEvent:(NSString *)action category:(NSString *)category)
 RCT_EXPORT_METHOD(trackVideoStreaming:(NSDictionary*)videoInfo videoAction:(NSString *)videoAction)
 {
 	NSLog( @"Video Action: '%@'", videoAction );
-	long position = videoInfo[@"position"] ? [videoInfo[@"position"] longValue] : 0L;
+	// long position = videoInfo[@"position"] ? [videoInfo[@"position"] longValue] : 0L;
 
 	if ([videoAction isEqualToString:@"start"]) {
 		// NSLog( @"notifyPlay: '%@'", videoAction );
-		[streamingAnalytics createPlaybackSession];
-		[[streamingAnalytics playbackSession] setAssetWithLabels: videoInfo];
-		[streamingAnalytics notifyPlayWithPosition:position labels:videoInfo];
+		// [streamingAnalytics createPlaybackSession];
+		// [[streamingAnalytics playbackSession] setAssetWithLabels: videoInfo];
+		[streamingAnalytics createPlaybackSessionWithLabels videoInfo];
+		// [streamingAnalytics notifyPlayWithLabels videoInfo];
+		[streamingAnalytics notifyPlay];
+		// [streamingAnalytics notifyPlayWithPosition:position labels:videoInfo];
 	} else if ([videoAction isEqualToString:@"resume"]) {
 		// NSLog( @"notifyPlay: '%@'", videoAction );
 		[streamingAnalytics notifyPlay];
