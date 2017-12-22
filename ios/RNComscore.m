@@ -74,8 +74,8 @@ RCT_EXPORT_METHOD(trackVideoStreaming:(NSDictionary*)videoInfo videoAction:(NSSt
 		// NSLog( @"notifyPlay: '%@'", videoAction );
 		// [streamingAnalytics createPlaybackSession];
 		// [[streamingAnalytics playbackSession] setAssetWithLabels: videoInfo];
-		[streamingAnalytics createPlaybackSessionWithLabels videoInfo];
-		// [streamingAnalytics notifyPlayWithLabels videoInfo];
+		[streamingAnalytics createPlaybackSessionWithLabels: videoInfo];
+		// [streamingAnalytics notifyPlayWithLabels: videoInfo];
 		[streamingAnalytics notifyPlay];
 		// [streamingAnalytics notifyPlayWithPosition:position labels:videoInfo];
 	} else if ([videoAction isEqualToString:@"resume"]) {
