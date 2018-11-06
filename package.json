@@ -1,7 +1,7 @@
 
 {
   "name": "react-native-comscore",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Wrapper for the Comscore native library",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,6 @@
   "author": "Small Town Heroes. Modified by Osedea",
   "license": "",
   "peerDependencies": {
-    "react-native": "~0.49.3"
+    "react-native": "~0.57.4"
   }
 }
